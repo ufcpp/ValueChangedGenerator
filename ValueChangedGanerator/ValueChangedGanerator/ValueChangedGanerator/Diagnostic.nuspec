@@ -4,16 +4,15 @@
     <id>ValueChangedGanerator</id>
     <version>1.0.0.0</version>
     <title>ValueChangedGanerator</title>
-    <authors>ValueChangedGanerator</authors>
-    <owners>ValueChangedGanerator</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <authors>Nobuyuki Iwanaga</authors>
+    <owners>Nobuyuki Iwanaga</owners>
+    <licenseUrl>https://github.com/ufcpp/ValueChangedGanerator/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ufcpp/ValueChangedGanerator</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>ValueChangedGanerator</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright</copyright>
-    <tags>ValueChangedGanerator, analyzers</tags>
+    <description>Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Nobuyuki Iwanaga</copyright>
+    <tags>INotifyPropertyChanged, PropertyChanged, analyzers, code fix, code generator</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>
