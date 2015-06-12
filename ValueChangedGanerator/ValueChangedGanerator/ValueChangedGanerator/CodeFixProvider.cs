@@ -162,9 +162,9 @@ namespace ValueChangedGanerator
         private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(SimpleProperty p)
         {
             var dependentChanged = string.Join("", p.Dependents.Select(d => $" OnPropertyChanged({d.Name}Property);"));
-            var source = string.Format(@"        public int {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {1} }} }}
+            var source = string.Format(@"        public {1} {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {2} }} }}
         private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(nameof({0}));",
-                p.Name, dependentChanged);
+                p.Name, p.Type.WithoutTrivia().GetText().ToString(), dependentChanged);
 
             var generatedNodes = CSharpSyntaxTree.ParseText(source)
                 .GetRoot().ChildNodes()
@@ -176,10 +176,10 @@ namespace ValueChangedGanerator
 
         private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(DependentProperty p)
         {
-            var source = string.Format(@"        public int {0} => _value.{0};
+            var source = string.Format(@"        public {1} {0} => _value.{0};
         private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(nameof({0}));
 ",
-                p.Name);
+                p.Name, p.Type.WithoutTrivia().GetText().ToString());
 
             var generatedNodes = CSharpSyntaxTree.ParseText(source)
                 .GetRoot().ChildNodes()
