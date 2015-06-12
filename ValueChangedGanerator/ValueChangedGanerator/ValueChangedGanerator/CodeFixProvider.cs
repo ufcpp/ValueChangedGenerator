@@ -109,7 +109,7 @@ namespace ValueChangedGanerator
 
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
 
-            return CompilationUnit().AddUsings(root.Usings.ToArray())
+            return CompilationUnit().AddUsings(root.Usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray())
                 .AddMembers(topDecl)
                 .WithTrailingTrivia(CarriageReturnLineFeed)
                 .WithAdditionalAnnotations(Formatter.Annotation);

@@ -71,7 +71,7 @@ namespace ValueChangedGanerator {
         }
         
         /// <summary>
-        ///   Type &apos;{0}&apos; implements INotifyPropertyChanged and contains a Record struct. に類似しているローカライズされた文字列を検索します。
+        ///   Generates PropertyChanged for &apos;{0}&apos;. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string AnalyzerMessageFormat {
             get {
