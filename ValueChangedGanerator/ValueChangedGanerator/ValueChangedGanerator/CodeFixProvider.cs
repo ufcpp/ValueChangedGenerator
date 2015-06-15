@@ -71,11 +71,8 @@ namespace ValueChangedGanerator
             var project = document.Project;
 
             var existed = project.Documents.FirstOrDefault(d => d.Name == generatedName);
-            if (existed != null)
-                project = project.RemoveDocument(existed.Id);
-
-            var newDocument = project.AddDocument(generatedName, newRoot, document.Folders);
-            return newDocument;
+            if (existed != null) return existed.WithSyntaxRoot(newRoot);
+            else return project.AddDocument(generatedName, newRoot, document.Folders);
         }
 
         private static async Task<CompilationUnitSyntax> GeneratePartialDeclaration(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
@@ -109,10 +106,20 @@ namespace ValueChangedGanerator
 
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
 
-            return CompilationUnit().AddUsings(root.Usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray())
+            return CompilationUnit().AddUsings(WithComponentModel(root.Usings))
                 .AddMembers(topDecl)
                 .WithTrailingTrivia(CarriageReturnLineFeed)
                 .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        private static UsingDirectiveSyntax[] WithComponentModel(IEnumerable<UsingDirectiveSyntax> usings)
+        {
+            const string SystemComponentModel = "System.ComponentModel";
+
+            if (usings.Any(x => x.Name.WithoutTrivia().GetText().ToString() == SystemComponentModel))
+                return usings.ToArray();
+
+            return usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray();
         }
 
         private static IEnumerable<MemberDeclarationSyntax> GetGeneratedNodes(RecordDefinition def)

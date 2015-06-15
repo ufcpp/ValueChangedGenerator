@@ -43,7 +43,7 @@ namespace ValueChangedGanerator
             if (!parent.ChildNodes().Any(n => n == s))
                 return;
 
-            var diagnostic = Diagnostic.Create(Rule, parent.GetLocation(), parent.Identifier.Text);
+            var diagnostic = Diagnostic.Create(Rule, s.GetLocation(), parent.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }
     }
