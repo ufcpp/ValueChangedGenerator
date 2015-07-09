@@ -38,14 +38,18 @@ namespace ValueChangedGanerator
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
-                CodeAction.Create("Generate properties", c => GenerateValueChanged(context.Document, declaration, c)),
+                CodeAction.Create("Generate properties", c => GenerateValueChanged(context.Document, declaration, true, c)),
+                diagnostic);
+
+            context.RegisterCodeFix(
+                CodeAction.Create("Generate properties (> C# 5)", c => GenerateValueChanged(context.Document, declaration, false, c)),
                 diagnostic);
         }
 
-        private async Task<Solution> GenerateValueChanged(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
+        private async Task<Solution> GenerateValueChanged(Document document, ClassDeclarationSyntax classDecl, bool isCharp6, CancellationToken cancellationToken)
         {
             document = await AddPartialModifier(document, classDecl, cancellationToken);
-            document = await AddNewDocument(document, classDecl, cancellationToken);
+            document = await AddNewDocument(document, classDecl, isCharp6, cancellationToken);
             return document.Project.Solution;
         }
 
@@ -61,9 +65,9 @@ namespace ValueChangedGanerator
             return document;
         }
 
-        private static async Task<Document> AddNewDocument(Document document, ClassDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        private static async Task<Document> AddNewDocument(Document document, ClassDeclarationSyntax typeDecl, bool isCharp6, CancellationToken cancellationToken)
         {
-            var newRoot = await GeneratePartialDeclaration(document, typeDecl, cancellationToken);
+            var newRoot = await GeneratePartialDeclaration(document, typeDecl, isCharp6, cancellationToken);
 
             var name = typeDecl.Identifier.Text;
             var generatedName = name + ".ValueChanged.cs";
@@ -75,7 +79,7 @@ namespace ValueChangedGanerator
             else return project.AddDocument(generatedName, newRoot, document.Folders);
         }
 
-        private static async Task<CompilationUnitSyntax> GeneratePartialDeclaration(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
+        private static async Task<CompilationUnitSyntax> GeneratePartialDeclaration(Document document, ClassDeclarationSyntax classDecl, bool isCharp6, CancellationToken cancellationToken)
         {
             var strDecl = (StructDeclarationSyntax)classDecl.ChildNodes().First(x => x is StructDeclarationSyntax);
 
@@ -83,7 +87,9 @@ namespace ValueChangedGanerator
 
             var ti = semanticModel.GetTypeInfo(strDecl);
 
-            var def = new RecordDefinition(strDecl);
+            var opt = new CodeGenerationOptions(isCharp6);
+
+            var def = new RecordDefinition(strDecl, opt);
             var generatedNodes = GetGeneratedNodes(def).ToArray();
 
             var newClassDecl = classDecl.GetPartialTypeDelaration()
@@ -166,11 +172,18 @@ namespace ValueChangedGanerator
             yield return array[array.Length - 1].WithTrailingTrivia(trailingTrivia);
         }
 
+        private static string NameOf(SimpleProperty p) => NameOf(p.Name, p.Options.IsCsharp6);
+        private static string NameOf(DependentProperty p) => NameOf(p.Name, p.Options.IsCsharp6);
+        private static string NameOf(string identifier, bool isCsharp6)
+            => isCsharp6
+            ? $"nameof({identifier})"
+            : $"\"{identifier}\"";
+
         private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(SimpleProperty p)
         {
             var dependentChanged = string.Join("", p.Dependents.Select(d => $" OnPropertyChanged({d.Name}Property);"));
             var source = string.Format(@"        public {1} {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {2} }} }}
-        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(nameof({0}));",
+        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs("+ NameOf(p)+ ");",
                 p.Name, p.Type.WithoutTrivia().GetText().ToString(), dependentChanged);
 
             var generatedNodes = CSharpSyntaxTree.ParseText(source)
@@ -184,7 +197,7 @@ namespace ValueChangedGanerator
         private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(DependentProperty p)
         {
             var source = string.Format(@"        public {1} {0} => _value.{0};
-        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(nameof({0}));
+        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + @");
 ",
                 p.Name, p.Type.WithoutTrivia().GetText().ToString());
 

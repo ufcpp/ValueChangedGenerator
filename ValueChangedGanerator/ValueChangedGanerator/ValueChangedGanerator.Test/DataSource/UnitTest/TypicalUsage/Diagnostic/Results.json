@@ -2,8 +2,8 @@
     {
         "id": "ValueChangedGanerator",
         "sevirity": "Info",
-        "line": 13,
-        "column": 5,
+        "line": 15,
+        "column": 9,
         "path": "Sample.cs",
         "message-args": [ "Sample" ]
     }

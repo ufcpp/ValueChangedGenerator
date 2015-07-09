@@ -6,16 +6,31 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ValueChangedGanerator.DataModels
 {
+    public class CodeGenerationOptions
+    {
+        public bool IsCsharp6 { get; }
+
+        /// <summary>Record Constructor</summary>
+        /// <param name="isCsharp6"><see cref="IsCsharp6"/></param>
+        public CodeGenerationOptions(bool isCsharp6 = default(bool))
+        {
+            IsCsharp6 = isCsharp6;
+        }
+    }
+
     public class RecordDefinition
     {
         public IReadOnlyList<SimpleProperty> Properties { get; }
 
         public IReadOnlyList<DependentProperty> DependentProperties { get; }
 
-        public RecordDefinition(StructDeclarationSyntax decl)
+        public CodeGenerationOptions Options { get; }
+
+        public RecordDefinition(StructDeclarationSyntax decl, CodeGenerationOptions options)
         {
-            Properties = SimpleProperty.New(decl).ToArray();
-            DependentProperties = DependentProperty.New(decl, Properties).ToArray();
+            Properties = SimpleProperty.New(decl, options).ToArray();
+            DependentProperties = DependentProperty.New(decl, Properties, options).ToArray();
+            Options = options;
         }
     }
 
@@ -25,20 +40,22 @@ namespace ValueChangedGanerator.DataModels
         public string Name { get; }
         public SyntaxTriviaList LeadingTrivia { get; }
         public SyntaxTriviaList TrailingTrivia { get; }
+        public CodeGenerationOptions Options { get; }
 
         public IEnumerable<DependentProperty> Dependents => _dependents;
         private List<DependentProperty> _dependents = new List<DependentProperty>();
 
-        public SimpleProperty(FieldDeclarationSyntax d)
+        public SimpleProperty(FieldDeclarationSyntax d, CodeGenerationOptions options)
         {
             Type = d.Declaration.Type;
             Name = d.Declaration.Variables[0].Identifier.Text;
             LeadingTrivia = d.GetLeadingTrivia();
             TrailingTrivia = d.GetTrailingTrivia();
+            Options = options;
         }
 
-        public static IEnumerable<SimpleProperty> New(StructDeclarationSyntax decl)
-            => decl.Members.OfType<FieldDeclarationSyntax>().Select(d => new SimpleProperty(d));
+        public static IEnumerable<SimpleProperty> New(StructDeclarationSyntax decl, CodeGenerationOptions options)
+            => decl.Members.OfType<FieldDeclarationSyntax>().Select(d => new SimpleProperty(d, options));
 
         internal void AddDependent(DependentProperty dp) => _dependents.Add(dp);
     }
@@ -50,18 +67,20 @@ namespace ValueChangedGanerator.DataModels
         public SyntaxTriviaList LeadingTrivia { get; }
         public SyntaxTriviaList TrailingTrivia { get; }
         public IEnumerable<string> DependsOn { get; }
+        public CodeGenerationOptions Options { get; }
 
-        public DependentProperty(PropertyDeclarationSyntax d, IEnumerable<SimpleProperty> simpleProperties)
+        public DependentProperty(PropertyDeclarationSyntax d, IEnumerable<SimpleProperty> simpleProperties, CodeGenerationOptions options)
         {
             Type = d.Type;
             Name = d.Identifier.Text;
             LeadingTrivia = d.GetLeadingTrivia();
             TrailingTrivia = d.GetTrailingTrivia();
             DependsOn = GetDependsOn(d, simpleProperties).ToArray();
+            Options = options;
         }
 
-        public static IEnumerable<DependentProperty> New(StructDeclarationSyntax decl, IEnumerable<SimpleProperty> simpleProperties)
-            => decl.Members.OfType<PropertyDeclarationSyntax>().Select(d => new DependentProperty(d, simpleProperties));
+        public static IEnumerable<DependentProperty> New(StructDeclarationSyntax decl, IEnumerable<SimpleProperty> simpleProperties, CodeGenerationOptions options)
+            => decl.Members.OfType<PropertyDeclarationSyntax>().Select(d => new DependentProperty(d, simpleProperties, options));
 
         private IEnumerable<string> GetDependsOn(PropertyDeclarationSyntax property, IEnumerable<SimpleProperty> simpleProperties)
         {

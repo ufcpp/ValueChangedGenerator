@@ -142,7 +142,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DataSource_2UnitTest_2TypicalUsage_2Diagnostic_2Results_1json__JSONSchema="..\..\..\result-schema-v2.json" DataSource_2UnitTest_2TestMethod2_2Results_1json__JSONSchema="..\..\result-schema.json" />
+      <UserProperties DataSource_2UnitTest_2TypicalUsage_2Diagnostic_2Results_1json__JSONSchema="..\..\..\result-schema-v2.json" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
