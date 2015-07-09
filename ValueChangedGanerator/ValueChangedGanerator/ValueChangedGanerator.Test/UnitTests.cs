@@ -1,13 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using TestHelper;
-using ValueChangedGanerator;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft.CodeAnalysis.CSharp;
+using TestHelper;
 
 namespace ValueChangedGanerator.Test
 {
@@ -19,7 +17,7 @@ namespace ValueChangedGanerator.Test
             get
             {
                 foreach (var r in base.References) yield return r;
-                yield return MetadataReference.CreateFromAssembly(typeof(INotifyPropertyChanged).Assembly);
+                yield return MetadataReference.CreateFromFile(typeof(INotifyPropertyChanged).Assembly.Location);
             }
         }
 
