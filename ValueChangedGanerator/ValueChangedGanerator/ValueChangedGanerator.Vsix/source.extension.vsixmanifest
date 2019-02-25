@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="ValueChangedGanerator.Vsix..723c3bf3-360e-49d2-95b4-278aec289e9e" Version="2.0.1" Language="en-US" Publisher="iwanaga"/>
-    <DisplayName>ValueChangedGanerator.Vsix</DisplayName>
-    <Description xml:space="preserve">Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</Description>
-    <MoreInfo>https://github.com/ufcpp/ValueChangedGanerator</MoreInfo>
-    <License>LICENSE.txt</License>
-    <ReleaseNotes>Update VSIX to V3 (support VS 2017)</ReleaseNotes>
-    <PreviewImage>Screenshot.png</PreviewImage>
-    <Tags>Upgrade to Microsoft.CodeAnalysis RC3</Tags>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.Pro" />
-  </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-  </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ValueChangedGanerator" Path="|ValueChangedGanerator|"/>
-    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ValueChangedGanerator" Path="|ValueChangedGanerator|"/>
-  </Assets>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Core" Version="[15.0,16.0)" DisplayName="Roslyn Language Services" />
-  </Prerequisites>
+    <Metadata>
+        <Identity Id="ValueChangedGanerator.Vsix..723c3bf3-360e-49d2-95b4-278aec289e9e" Version="2.1.0" Language="en-US" Publisher="iwanaga"/>
+        <DisplayName>ValueChangedGanerator.Vsix</DisplayName>
+        <Description xml:space="preserve">Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</Description>
+        <MoreInfo>https://github.com/ufcpp/ValueChangedGanerator</MoreInfo>
+        <License>LICENSE.txt</License>
+        <ReleaseNotes>Support generic types</ReleaseNotes>
+        <PreviewImage>Screenshot.png</PreviewImage>
+        <Tags>analyzers,Code Fix,Code Generator,INotifyPropertyChanged,PropertyChanged</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Version="[14.0,17.0]" Id="Microsoft.VisualStudio.Pro" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ValueChangedGanerator" Path="|ValueChangedGanerator|"/>
+        <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ValueChangedGanerator" Path="|ValueChangedGanerator|"/>
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Core" Version="[15.0,)" DisplayName="Roslyn Language Services" />
+    </Prerequisites>
 </PackageManifest>
