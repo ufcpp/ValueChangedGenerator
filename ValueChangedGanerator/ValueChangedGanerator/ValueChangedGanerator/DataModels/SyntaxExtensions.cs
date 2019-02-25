@@ -18,9 +18,21 @@ namespace ValueChangedGanerator.DataModels
 
         public static ClassDeclarationSyntax GetPartialTypeDelaration(this ClassDeclarationSyntax typeDecl)
             => CSharpSyntaxTree.ParseText($@"
-partial class {typeDecl.Identifier.Text}
+partial class {GetGenericTypeName(typeDecl)}
 {{
 }}
 ").GetRoot().ChildNodes().OfType<ClassDeclarationSyntax>().First();
+
+        private static string GetGenericTypeName(TypeDeclarationSyntax typeDecl)
+        {
+            if (typeDecl.TypeParameterList == null)
+            {
+                return typeDecl.Identifier.Text;
+            }
+
+            return typeDecl.Identifier.Text + "<" +
+                string.Join(", ", typeDecl.TypeParameterList.Parameters.Select(p => p.Identifier.Text)) +
+                ">";
+        }
     }
 }

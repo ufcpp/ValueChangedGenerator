@@ -41,6 +41,9 @@ namespace ValueChangedGanerator.Test
         [TestMethod]
         public void TypicalUsage() => VerifyCSharpByConvention();
 
+        [TestMethod]
+        public void GenericType() => VerifyCSharpByConvention();
+
         protected override CodeFixProvider GetCSharpCodeFixProvider() => new ValueChangedGaneratorCodeFixProvider();
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer() => new ValueChangedGaneratorAnalyzer();

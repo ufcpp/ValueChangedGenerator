@@ -99,9 +99,13 @@
     <None Include="app.config" />
     <None Include="DataSource\result-schema-v1.json" />
     <None Include="DataSource\result-schema-v2.json" />
+    <None Include="DataSource\UnitTest\GenericType\Diagnostic\Results.json" />
     <None Include="DataSource\UnitTest\TypicalUsage\Expected\Sample.cs" />
     <None Include="DataSource\UnitTest\TypicalUsage\Source\Sample.cs" />
     <None Include="DataSource\UnitTest\TypicalUsage\Expected\Sample.ValueChanged.cs" />
+    <None Include="DataSource\UnitTest\GenericType\Expected\Sample.cs" />
+    <None Include="DataSource\UnitTest\GenericType\Expected\Sample.ValueChanged.cs" />
+    <None Include="DataSource\UnitTest\GenericType\Source\Sample.cs" />
     <Compile Include="Verifiers\CodeFixVerifier.cs" />
     <Compile Include="Verifiers\ConventionCodeFixVerifier.cs" />
     <Compile Include="Verifiers\DiagnosticVerifier.cs" />

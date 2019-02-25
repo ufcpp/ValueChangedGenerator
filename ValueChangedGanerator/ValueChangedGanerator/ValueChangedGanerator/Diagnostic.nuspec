@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>ValueChangedGanerator</id>
-    <version>2.0.0.0</version>
+    <version>2.1.0.0</version>
     <title>ValueChangedGanerator</title>
     <authors>Nobuyuki Iwanaga</authors>
     <owners>Nobuyuki Iwanaga</owners>
@@ -10,9 +10,8 @@
     <projectUrl>https://github.com/ufcpp/ValueChangedGanerator</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</description>
-    <releaseNotes>Some fixes</releaseNotes>
+    <releaseNotes>Support generic types</releaseNotes>
     <copyright>Nobuyuki Iwanaga</copyright>
-    <tags>Upgrade to Microsoft.CodeAnalysis RC3</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>
