@@ -2,14 +2,13 @@
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TestHelper;
+using Xunit;
 
 namespace ValueChangedGanerator.Test
 {
-    [TestClass]
     public class UnitTest : ConventionCodeFixVerifier
     {
         protected override IEnumerable<MetadataReference> References
@@ -29,7 +28,7 @@ namespace ValueChangedGanerator.Test
             });
 
         //No diagnostics expected to show up
-        [TestMethod]
+        [Fact]
         public void TestMethod1()
         {
             var test = @"";
@@ -38,10 +37,10 @@ namespace ValueChangedGanerator.Test
         }
 
         //Diagnostic and CodeFix both triggered and checked for
-        [TestMethod]
+        [Fact]
         public void TypicalUsage() => VerifyCSharpByConvention();
 
-        [TestMethod]
+        [Fact]
         public void GenericType() => VerifyCSharpByConvention();
 
         protected override CodeFixProvider GetCSharpCodeFixProvider() => new ValueChangedGaneratorCodeFixProvider();

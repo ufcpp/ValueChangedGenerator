@@ -10,8 +10,8 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Xunit;
 
 namespace TestHelper
 {
@@ -151,13 +151,13 @@ namespace TestHelper
                 actualSources.Add(doc.Name, code);
             }
 
-            Assert.IsTrue(actualSources.Keys.SequenceEqual(expectedSources.Keys));
+            Assert.True(actualSources.Keys.SequenceEqual(expectedSources.Keys));
 
             foreach (var item in actualSources)
             {
                 var actual = item.Value;
                 var newSource = expectedSources[item.Key];
-                Assert.AreEqual(newSource, actual);
+                Assert.Equal(newSource, actual);
             }
         }
 
