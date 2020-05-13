@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <PackageId>ValueChangedGanerator</PackageId>
-    <PackageVersion>3.0.0.0</PackageVersion>
+    <PackageVersion>3.1.0.0</PackageVersion>
     <Authors>Nobuyuki Iwanaga</Authors>
     <PackageLicenseUrl>https://github.com/ufcpp/ValueChangedGanerator/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ufcpp/ValueChangedGanerator/</PackageProjectUrl>
@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
