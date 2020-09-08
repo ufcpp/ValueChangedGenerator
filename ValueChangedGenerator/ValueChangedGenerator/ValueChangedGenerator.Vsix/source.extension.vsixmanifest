@@ -3,7 +3,9 @@
   <Metadata>
     <Identity Id="ValueChangedGenerator.3764d9b9-7ffa-4fb3-9680-d5ce16903661" Version="1.0" Language="en-US" Publisher="xii-h"/>
     <DisplayName>ValueChangedGenerator</DisplayName>
-    <Description xml:space="preserve">This is a sample diagnostic extension for the .NET Compiler Platform ("Roslyn").</Description>
+    <Description xml:space="preserve">Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</Description>
+    <PreviewImage>Screenshot.png</PreviewImage>
+    <Tags>analyzers,Code Fix,Code Generator,INotifyPropertyChanged,PropertyChanged</Tags>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />

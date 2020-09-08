@@ -10,15 +10,14 @@
   <PropertyGroup>
     <PackageId>ValueChangedGenerator</PackageId>
     <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>xii-h</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
+    <Authors>Nobuyuki Iwanaga</Authors>
+    <PackageLicenseUrl>https://github.com/ufcpp/ValueChangedGenerator/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ufcpp/ValueChangedGenerator/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ufcpp/ValueChangedGenerator/</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>ValueChangedGenerator</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
+    <Description>Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</Description>
+    <PackageReleaseNotes>renew with the latest Roslyn SDK.</PackageReleaseNotes>
+    <Copyright>Nobuyuki Iwanaga</Copyright>
     <PackageTags>ValueChangedGenerator, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
