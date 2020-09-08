@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30428.66
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueChangedGenerator", "ValueChangedGenerator\ValueChangedGenerator\ValueChangedGenerator.csproj", "{5915CA94-F5A8-49BA-98FD-09B455C26E44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueChangedGenerator.CodeFixes", "ValueChangedGenerator\ValueChangedGenerator.CodeFixes\ValueChangedGenerator.CodeFixes.csproj", "{FAA797FC-723C-47C7-B3DA-2672733C7B4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueChangedGenerator.Package", "ValueChangedGenerator\ValueChangedGenerator.Package\ValueChangedGenerator.Package.csproj", "{81019264-DDD8-4CA5-96DE-2573A68F6666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueChangedGenerator.Test", "ValueChangedGenerator\ValueChangedGenerator.Test\ValueChangedGenerator.Test.csproj", "{871DF3A2-236F-43D6-8C6C-111050DD4366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueChangedGenerator.Vsix", "ValueChangedGenerator\ValueChangedGenerator.Vsix\ValueChangedGenerator.Vsix.csproj", "{2ABA407E-D049-49F6-8744-040A54A30E2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{871DF3A2-236F-43D6-8C6C-111050DD4366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{871DF3A2-236F-43D6-8C6C-111050DD4366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{871DF3A2-236F-43D6-8C6C-111050DD4366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{871DF3A2-236F-43D6-8C6C-111050DD4366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABA407E-D049-49F6-8744-040A54A30E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABA407E-D049-49F6-8744-040A54A30E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABA407E-D049-49F6-8744-040A54A30E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABA407E-D049-49F6-8744-040A54A30E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14EE4099-3038-4951-BA5A-D603D41AF7D9}
+	EndGlobalSection
+EndGlobal
