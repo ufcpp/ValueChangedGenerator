@@ -12,22 +12,17 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.Formatting;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ValueChangedGenerator
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ValueChangedGeneratorCodeFixProvider)), Shared]
     public class ValueChangedGeneratorCodeFixProvider : CodeFixProvider
     {
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get { return ImmutableArray.Create(ValueChangedGeneratorAnalyzer.DiagnosticId); }
-        }
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(ValueChangedGeneratorAnalyzer.DiagnosticId);
 
-        public sealed override FixAllProvider GetFixAllProvider()
-        {
-            // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
-            return WellKnownFixAllProviders.BatchFixer;
-        }
+        public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
@@ -38,34 +33,173 @@ namespace ValueChangedGenerator
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
+            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: CodeFixResources.CodeFixTitle,
-                    createChangedSolution: c => MakeUppercaseAsync(context.Document, declaration, c),
+                    createChangedSolution: c => GenerateValueChanged(context.Document, declaration, c),
                     equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
                 diagnostic);
         }
 
-        private async Task<Solution> MakeUppercaseAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        private async Task<Solution> GenerateValueChanged(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
         {
-            // Compute new uppercase name.
-            var identifierToken = typeDecl.Identifier;
-            var newName = identifierToken.Text.ToUpperInvariant();
+            document = await AddPartialModifier(document, classDecl, cancellationToken);
+            document = await AddNewDocument(document, classDecl, cancellationToken);
+            return document.Project.Solution;
+        }
 
-            // Get the symbol representing the type to be renamed.
+        private static async Task<Document> AddPartialModifier(Document document, ClassDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        {
+            var newTypeDecl = typeDecl.AddPartialModifier();
+
+            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
+            var newRoolt = root.ReplaceNode(typeDecl, newTypeDecl)
+                .WithAdditionalAnnotations(Formatter.Annotation);
+
+            document = document.WithSyntaxRoot(newRoolt);
+            return document;
+        }
+
+        private static async Task<Document> AddNewDocument(Document document, ClassDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        {
+            var newRoot = await GeneratePartialDeclaration(document, typeDecl, cancellationToken);
+
+            var name = typeDecl.Identifier.Text;
+            var generatedName = name + ".ValueChanged.cs";
+
+            var project = document.Project;
+
+            var existed = project.Documents.FirstOrDefault(d => d.Name == generatedName);
+            if (existed != null) return existed.WithSyntaxRoot(newRoot);
+            else return project.AddDocument(generatedName, newRoot, document.Folders);
+        }
+
+        private static async Task<CompilationUnitSyntax> GeneratePartialDeclaration(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
+        {
+            var strDecl = (StructDeclarationSyntax)classDecl.ChildNodes().First(x => x is StructDeclarationSyntax);
+
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
 
-            // Produce a new solution that has all references to that type renamed, including the declaration.
-            var originalSolution = document.Project.Solution;
-            var optionSet = originalSolution.Workspace.Options;
-            var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, typeSymbol, newName, optionSet, cancellationToken).ConfigureAwait(false);
+            var ti = semanticModel.GetTypeInfo(strDecl);
 
-            // Return the new solution with the now-uppercase type name.
-            return newSolution;
+            var def = new RecordDefinition(strDecl);
+            var generatedNodes = GetGeneratedNodes(def).ToArray();
+
+            var newClassDecl = classDecl.GetPartialTypeDelaration()
+                .AddMembers(generatedNodes)
+                .WithAdditionalAnnotations(Formatter.Annotation);
+
+            var ns = classDecl.FirstAncestorOrSelf<NamespaceDeclarationSyntax>()?.Name.WithoutTrivia().GetText().ToString();
+
+            MemberDeclarationSyntax topDecl;
+            if (ns != null)
+            {
+                topDecl = NamespaceDeclaration(IdentifierName(ns))
+                    .AddMembers(newClassDecl)
+                    .WithAdditionalAnnotations(Formatter.Annotation);
+            }
+            else
+            {
+                topDecl = newClassDecl;
+            }
+
+            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
+
+            return CompilationUnit().AddUsings(WithComponentModel(root.Usings))
+                .AddMembers(topDecl)
+                .WithTrailingTrivia(CarriageReturnLineFeed)
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        private static UsingDirectiveSyntax[] WithComponentModel(IEnumerable<UsingDirectiveSyntax> usings)
+        {
+            const string SystemComponentModel = "System.ComponentModel";
+
+            if (usings.Any(x => x.Name.WithoutTrivia().GetText().ToString() == SystemComponentModel))
+                return usings.ToArray();
+
+            return usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray();
+        }
+
+        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedNodes(RecordDefinition def)
+        {
+            yield return CSharpSyntaxTree.ParseText(
+                @"        private NotifyRecord _value;
+")
+                .GetRoot().ChildNodes()
+                .OfType<MemberDeclarationSyntax>()
+                .First()
+                .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed)
+                .WithAdditionalAnnotations(Formatter.Annotation)
+                ;
+
+            foreach (var p in def.Properties)
+                foreach (var s in WithTrivia(GetGeneratedMember(p), p.LeadingTrivia, p.TrailingTrivia))
+                    yield return s;
+
+            foreach (var p in def.DependentProperties)
+                foreach (var s in WithTrivia(GetGeneratedMember(p), p.LeadingTrivia, p.TrailingTrivia))
+                    yield return s;
+        }
+
+        private static IEnumerable<MemberDeclarationSyntax> WithTrivia(IEnumerable<MemberDeclarationSyntax> members, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
+        {
+            var array = members.ToArray();
+
+            if (array.Length == 0) yield break;
+
+            if (array.Length == 1)
+            {
+                yield return array[0]
+                    .WithLeadingTrivia(leadingTrivia)
+                    .WithTrailingTrivia(trailingTrivia);
+
+                yield break;
+            }
+
+            yield return array[0].WithLeadingTrivia(leadingTrivia);
+
+            for (int i = 1; i < array.Length - 1; i++)
+                yield return array[i];
+
+            yield return array[array.Length - 1].WithTrailingTrivia(trailingTrivia);
+        }
+
+        private static string NameOf(SimpleProperty p) => NameOf(p.Name);
+        private static string NameOf(DependentProperty p) => NameOf(p.Name);
+        private static string NameOf(string identifier) => $"nameof({identifier})";
+
+        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(SimpleProperty p)
+        {
+            var dependentChanged = string.Join("", p.Dependents.Select(d => $" OnPropertyChanged({d.Name}Property);"));
+            var source = string.Format(@"        public {1} {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {2} }} }}
+        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + ");",
+                p.Name, p.Type.WithoutTrivia().GetText().ToString(), dependentChanged);
+
+            var generatedNodes = CSharpSyntaxTree.ParseText(source)
+                .GetRoot().ChildNodes()
+                .OfType<MemberDeclarationSyntax>()
+                .ToArray();
+
+            return generatedNodes;
+        }
+
+        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(DependentProperty p)
+        {
+            var source = string.Format(@"        public {1} {0} => _value.{0};
+        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + @");
+",
+                p.Name, p.Type.WithoutTrivia().GetText().ToString());
+
+            var generatedNodes = CSharpSyntaxTree.ParseText(source)
+                .GetRoot().ChildNodes()
+                .OfType<MemberDeclarationSyntax>()
+                .ToArray();
+
+            return generatedNodes;
         }
     }
 }
