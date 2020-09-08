@@ -1,18 +1,18 @@
-# ValueChangedGanerator
+# ValueChangedGenerator
 
 A Roslyn Code Fix provider for generating PropertyChanged from inner struct members.
 
 This inlcudes VSIX and NuGet packages of an analyzer created by using .NET Compiler Platform (Roslyn).
 
 - VSIX: https://visualstudiogallery.msdn.microsoft.com/bf5dbce2-b73d-4f5f-8e1c-0e1de386b7ce
-- NuGet: https://www.nuget.org/packages/ValueChangedGanerator/
+- NuGet: https://www.nuget.org/packages/ValueChangedGenerator/
 
 ## Usage
 
 - Insert an inner struct named `NotifyRecord` into a class that you want to generete its properties.
 - Use 'Quick Action' (Lightbulb) to fix the code
 
-![screenshot](https://github.com/ufcpp/ValueChangedGanerator/blob/master/ValueChangedGanerator/ValueChangedGanerator/ValueChangedGanerator.Vsix/Screenshot.png)
+![screenshot](https://github.com/ufcpp/ValueChangedGenerator/blob/master/ValueChangedGenerator/ValueChangedGenerator/ValueChangedGenerator.Vsix/Screenshot.png)
 
 ## Sample
 
