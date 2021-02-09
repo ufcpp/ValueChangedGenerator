@@ -67,20 +67,25 @@ namespace ValueChangedGenerator
                     }
                     var model = context.Compilation.GetSemanticModel(typeDecl.SyntaxTree);
                     if (model.GetDeclaredSymbol(typeDecl) is INamedTypeSymbol type)
-                        context.AddSource(GenerateHintName(type), GeneratePartialDeclaration(typeDecl).ToFullString());
+                        context.AddSource(GenerateHintName(type), GeneratePartialDeclaration(context, typeDecl).ToFullString());
                 }
             }
         }
 
-        private static CompilationUnitSyntax GeneratePartialDeclaration(ClassDeclarationSyntax classDecl)
+        private static CompilationUnitSyntax GeneratePartialDeclaration(GeneratorExecutionContext context, ClassDeclarationSyntax classDecl)
         {
             var strDecl = (StructDeclarationSyntax)classDecl.ChildNodes().First(x => x is StructDeclarationSyntax);
 
             var def = new RecordDefinition(strDecl);
             var generatedNodes = GetGeneratedNodes(def).ToArray();
 
-            var newClassDecl = classDecl.GetPartialTypeDelaration()
-                .AddMembers(generatedNodes);
+            var model = context.Compilation.GetSemanticModel(classDecl.SyntaxTree);
+            var container = model.GetDeclaredSymbol(classDecl);
+            var newClassDecl = container.GetContainingTypesAndThis()
+                .Select((type, i) => i == 0
+                    ? ClassDeclaration(type.Name).GetPartialTypeDelaration().AddMembers(generatedNodes)
+                    : ClassDeclaration(type.Name).GetPartialTypeDelaration())
+                .Aggregate((a, b) => b.AddMembers(a));
 
             var ns = classDecl.FirstAncestorOrSelf<NamespaceDeclarationSyntax>()?.Name.WithoutTrivia().GetText().ToString();
 
