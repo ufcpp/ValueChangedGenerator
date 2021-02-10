@@ -20,8 +20,4 @@
     <ProjectReference Include="..\ValueChangedGenerator\ValueChangedGenerator.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="CodeFixResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="CodeFixResources.Designer.cs" />
-  </ItemGroup>
-
 </Project>
