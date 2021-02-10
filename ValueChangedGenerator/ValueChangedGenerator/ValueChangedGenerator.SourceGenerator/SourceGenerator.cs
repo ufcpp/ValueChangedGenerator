@@ -4,7 +4,6 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ValueChangedGenerator
 {
@@ -67,131 +66,12 @@ namespace ValueChangedGenerator
                     }
                     var model = context.Compilation.GetSemanticModel(typeDecl.SyntaxTree);
                     if (model.GetDeclaredSymbol(typeDecl) is INamedTypeSymbol type)
-                        context.AddSource(GenerateHintName(type), GeneratePartialDeclaration(context, typeDecl).ToFullString());
+                    {
+                        var generator = new Generator();
+                        context.AddSource(GenerateHintName(type), generator.GeneratePartialDeclaration(type, typeDecl).ToFullString());
+                    }
                 }
             }
-        }
-
-        private static CompilationUnitSyntax GeneratePartialDeclaration(GeneratorExecutionContext context, ClassDeclarationSyntax classDecl)
-        {
-            var strDecl = (StructDeclarationSyntax)classDecl.ChildNodes().First(x => x is StructDeclarationSyntax);
-
-            var def = new RecordDefinition(strDecl);
-            var generatedNodes = GetGeneratedNodes(def).ToArray();
-
-            var model = context.Compilation.GetSemanticModel(classDecl.SyntaxTree);
-            var container = model.GetDeclaredSymbol(classDecl);
-            var newClassDecl = container.GetContainingTypesAndThis()
-                .Select((type, i) => i == 0
-                    ? ClassDeclaration(type.Name).GetPartialTypeDelaration().AddMembers(generatedNodes)
-                    : ClassDeclaration(type.Name).GetPartialTypeDelaration())
-                .Aggregate((a, b) => b.AddMembers(a));
-
-            var ns = classDecl.FirstAncestorOrSelf<NamespaceDeclarationSyntax>()?.Name.WithoutTrivia().GetText().ToString();
-
-            MemberDeclarationSyntax topDecl;
-            if (ns != null)
-            {
-                topDecl = NamespaceDeclaration(IdentifierName(ns))
-                    .AddMembers(newClassDecl);
-            }
-            else
-            {
-                topDecl = newClassDecl;
-            }
-
-            var root = (CompilationUnitSyntax)classDecl.SyntaxTree.GetRoot();
-
-            return CompilationUnit().AddUsings(WithComponentModel(root.Usings))
-                .AddMembers(topDecl)
-                .WithTrailingTrivia(CarriageReturnLineFeed)
-                .NormalizeWhitespace();
-        }
-
-        private static UsingDirectiveSyntax[] WithComponentModel(IEnumerable<UsingDirectiveSyntax> usings)
-        {
-            const string SystemComponentModel = "System.ComponentModel";
-
-            if (usings.Any(x => x.Name.WithoutTrivia().GetText().ToString() == SystemComponentModel))
-                return usings.ToArray();
-
-            return usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray();
-        }
-
-        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedNodes(RecordDefinition def)
-        {
-            yield return CSharpSyntaxTree.ParseText(
-                @"        private NotifyRecord _value;
-")
-                .GetRoot().ChildNodes()
-                .OfType<MemberDeclarationSyntax>()
-                .First()
-                .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed);
-
-            foreach (var p in def.Properties)
-                foreach (var s in WithTrivia(GetGeneratedMember(p), p.LeadingTrivia, p.TrailingTrivia))
-                    yield return s;
-
-            foreach (var p in def.DependentProperties)
-                foreach (var s in WithTrivia(GetGeneratedMember(p), p.LeadingTrivia, p.TrailingTrivia))
-                    yield return s;
-        }
-
-        private static IEnumerable<MemberDeclarationSyntax> WithTrivia(IEnumerable<MemberDeclarationSyntax> members, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
-        {
-            var array = members.ToArray();
-
-            if (array.Length == 0) yield break;
-
-            if (array.Length == 1)
-            {
-                yield return array[0]
-                    .WithLeadingTrivia(leadingTrivia)
-                    .WithTrailingTrivia(trailingTrivia);
-
-                yield break;
-            }
-
-            yield return array[0].WithLeadingTrivia(leadingTrivia);
-
-            for (int i = 1; i < array.Length - 1; i++)
-                yield return array[i];
-
-            yield return array[array.Length - 1].WithTrailingTrivia(trailingTrivia);
-        }
-
-        private static string NameOf(SimpleProperty p) => NameOf(p.Name);
-        private static string NameOf(DependentProperty p) => NameOf(p.Name);
-        private static string NameOf(string identifier) => $"nameof({identifier})";
-
-        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(SimpleProperty p)
-        {
-            var dependentChanged = string.Join("", p.Dependents.Select(d => $" OnPropertyChanged({d.Name}Property);"));
-            var source = string.Format(@"        public {1} {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {2} }} }}
-        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + ");",
-                p.Name, p.Type.WithoutTrivia().GetText().ToString(), dependentChanged);
-
-            var generatedNodes = CSharpSyntaxTree.ParseText(source)
-                .GetRoot().ChildNodes()
-                .OfType<MemberDeclarationSyntax>()
-                .ToArray();
-
-            return generatedNodes;
-        }
-
-        private static IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(DependentProperty p)
-        {
-            var source = string.Format(@"        public {1} {0} => _value.{0};
-        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + @");
-",
-                p.Name, p.Type.WithoutTrivia().GetText().ToString());
-
-            var generatedNodes = CSharpSyntaxTree.ParseText(source)
-                .GetRoot().ChildNodes()
-                .OfType<MemberDeclarationSyntax>()
-                .ToArray();
-
-            return generatedNodes;
         }
     }
 }
