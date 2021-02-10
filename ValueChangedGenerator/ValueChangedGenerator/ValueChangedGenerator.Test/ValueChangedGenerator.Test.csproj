@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ValueChangedGenerator.CodeFixes\ValueChangedGenerator.CodeFixes.csproj" />
+    <ProjectReference Include="..\ValueChangedGenerator.SourceGenerator\ValueChangedGenerator.SourceGenerator.csproj" />
     <ProjectReference Include="..\ValueChangedGenerator\ValueChangedGenerator.csproj" />
   </ItemGroup>
 
