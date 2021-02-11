@@ -22,7 +22,7 @@ namespace ValueChangedGenerator
                     : ClassDeclaration(type.Name).GetPartialTypeDelaration())
                 .Aggregate((a, b) => b.AddMembers(a));
 
-            var ns = classDecl.FirstAncestorOrSelf<NamespaceDeclarationSyntax>()?.Name.WithoutTrivia().GetText().ToString();
+            var ns = container.ContainingNamespace.FullName().NullIfEmpty();
 
             MemberDeclarationSyntax topDecl;
             if (ns != null)
