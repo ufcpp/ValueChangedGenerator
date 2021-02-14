@@ -5,6 +5,17 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>ValueChangedGenerator</RootNamespace>
+
+    <PackageId>ValueChangedGenerator.SourceGenerator</PackageId>
+    <Authors>Nobuyuki Iwanaga</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/ufcpp/ValueChangedGenerator</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>C# (Roslyn) Source Generator for generating PropertyChanged from inner struct members.</Description>
+
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +27,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
   </ItemGroup>
+
+  <Target Name="_AddAnalyzersToOutput">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(OutputPath)\ValueChangedGenerator.SourceGenerator.dll" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>
