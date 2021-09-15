@@ -122,11 +122,11 @@
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="AnalyzerMessageFormat" xml:space="preserve">
-    <value>Generates PropertyChanged for '{0}'.</value>
+    <value>Generates PropertyChanged for '{0}'</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="AnalyzerTitle" xml:space="preserve">
-    <value>PropertyChanged can be generated.</value>
+    <value>PropertyChanged can be generated</value>
     <comment>The title of the diagnostic.</comment>
   </data>
 </root>

@@ -352,5 +352,101 @@ namespace N1
             Assert.NotNull(container);
             Assert.Equal(expected, actual: generator.GeneratePartialDeclaration(container!, classDecl).ToFullString());
         }
+
+        [Fact]
+        public void GenerateUsings()
+        {
+            var expected = @"using System;
+using System.Linq;
+using System.ComponentModel;
+
+partial class Point
+{
+    private NotifyRecord _value;
+    public int X
+    {
+        get
+        {
+            return _value.X;
+        }
+
+        set
+        {
+            SetProperty(ref _value.X, value, XProperty);
+        }
+    }
+
+    private static readonly PropertyChangedEventArgs XProperty = new PropertyChangedEventArgs(nameof(X));
+}";
+            var text = @"using System;
+using System.Linq;
+
+partial class Point : BindableBase
+{
+    struct NotifyRecord
+    {
+        public int X;
+    }
+}";
+            var compilation = CSharpCompilation.Create(assemblyName: "test", options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddSyntaxTrees(CSharpSyntaxTree.ParseText(text));
+            var generator = new Generator();
+            var syntaxTrees = compilation.SyntaxTrees;
+            Assert.Single(syntaxTrees);
+            var classDecl = (ClassDeclarationSyntax)syntaxTrees.First().GetCompilationUnitRoot().DescendantNodes().First(x => x is ClassDeclarationSyntax);
+            var model = compilation.GetSemanticModel(classDecl.SyntaxTree);
+            var container = model.GetDeclaredSymbol(classDecl);
+            Assert.NotNull(container);
+            Assert.Equal(expected, actual: generator.GeneratePartialDeclaration(container!, classDecl).ToFullString());
+        }
+
+        [Fact]
+        public void GenerateFileScopedNamespace()
+        {
+            var expected = @"using System;
+using System.ComponentModel;
+
+namespace N
+{
+    partial class Point
+    {
+        private NotifyRecord _value;
+        public int X
+        {
+            get
+            {
+                return _value.X;
+            }
+
+            set
+            {
+                SetProperty(ref _value.X, value, XProperty);
+            }
+        }
+
+        private static readonly PropertyChangedEventArgs XProperty = new PropertyChangedEventArgs(nameof(X));
+    }
+}";
+            var text = @"using System;
+namespace N;
+
+partial class Point : BindableBase
+{
+    struct NotifyRecord
+    {
+        public int X;
+    }
+}";
+            var compilation = CSharpCompilation.Create(assemblyName: "test", options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddSyntaxTrees(CSharpSyntaxTree.ParseText(text));
+            var generator = new Generator();
+            var syntaxTrees = compilation.SyntaxTrees;
+            Assert.Single(syntaxTrees);
+            var classDecl = (ClassDeclarationSyntax)syntaxTrees.First().GetCompilationUnitRoot().DescendantNodes().First(x => x is ClassDeclarationSyntax);
+            var model = compilation.GetSemanticModel(classDecl.SyntaxTree);
+            var container = model.GetDeclaredSymbol(classDecl);
+            Assert.NotNull(container);
+            Assert.Equal(expected, actual: generator.GeneratePartialDeclaration(container!, classDecl).ToFullString());
+        }
     }
 }

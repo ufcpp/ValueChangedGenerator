@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="ValueChangedGenerator.3764d9b9-7ffa-4fb3-9680-d5ce16903661" Version="1.0" Language="en-US" Publisher="xii-h"/>
+    <Identity Id="ValueChangedGenerator.3764d9b9-7ffa-4fb3-9680-d5ce16903661" Version="2.0" Language="en-US" Publisher="xii-h"/>
     <DisplayName>ValueChangedGenerator</DisplayName>
     <Description xml:space="preserve">Roslyn Code Fix provider for generating PropertyChanged from inner struct members.</Description>
     <PreviewImage>Screenshot.png</PreviewImage>
     <Tags>analyzers,Code Fix,Code Generator,INotifyPropertyChanged,PropertyChanged</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
@@ -20,7 +22,7 @@
     <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ValueChangedGenerator.CodeFixes" Path="|ValueChangedGenerator.CodeFixes|"/>
   </Assets>
   <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0,)" DisplayName="Roslyn Language Services" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[17.0,)" DisplayName="Roslyn Language Services" />
   </Prerequisites>
 </PackageManifest>

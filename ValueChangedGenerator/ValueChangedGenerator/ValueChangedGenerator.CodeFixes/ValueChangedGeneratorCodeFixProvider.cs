@@ -28,12 +28,15 @@ namespace ValueChangedGenerator
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
+            if (root is null) return;
+
             // TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().First();
+            if (root.FindToken(diagnosticSpan.Start).Parent is not { } parent) return;
+            var declaration = parent.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
@@ -55,7 +58,8 @@ namespace ValueChangedGenerator
         {
             var newTypeDecl = typeDecl.AddPartialModifier();
 
-            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
+            if (await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) is not CompilationUnitSyntax root) return document;
+
             var newRoolt = root.ReplaceNode(typeDecl, newTypeDecl)
                 .WithAdditionalAnnotations(Formatter.Annotation);
 
@@ -83,6 +87,8 @@ namespace ValueChangedGenerator
 
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
+            if (semanticModel is null) return CompilationUnit();
+
             var ti = semanticModel.GetTypeInfo(strDecl);
 
             var def = new RecordDefinition(strDecl);
@@ -106,7 +112,7 @@ namespace ValueChangedGenerator
                 topDecl = newClassDecl;
             }
 
-            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) as CompilationUnitSyntax;
+            if (await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false) is not CompilationUnitSyntax root) return CompilationUnit();
 
             return CompilationUnit().AddUsings(WithComponentModel(root.Usings))
                 .AddMembers(topDecl)
