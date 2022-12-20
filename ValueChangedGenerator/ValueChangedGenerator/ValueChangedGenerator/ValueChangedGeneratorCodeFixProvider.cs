@@ -41,9 +41,9 @@ namespace ValueChangedGenerator
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: CodeFixResources.CodeFixTitle,
+                    title: Resources.CodeFixTitle,
                     createChangedSolution: c => GenerateValueChanged(context.Document, declaration, c),
-                    equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
+                    equivalenceKey: nameof(Resources.CodeFixTitle)),
                 diagnostic);
         }
 

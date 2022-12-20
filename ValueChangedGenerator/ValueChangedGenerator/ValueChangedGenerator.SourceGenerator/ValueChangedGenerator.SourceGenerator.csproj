@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\ValueChangedGenerator.CodeFixes\RecordDefinition.cs" Link="RecordDefinition.cs" />
-    <Compile Include="..\ValueChangedGenerator.CodeFixes\SyntaxExtensions.cs" Link="SyntaxExtensions.cs" />
+    <Compile Include="..\ValueChangedGenerator\RecordDefinition.cs" Link="RecordDefinition.cs" />
+    <Compile Include="..\ValueChangedGenerator\SyntaxExtensions.cs" Link="SyntaxExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

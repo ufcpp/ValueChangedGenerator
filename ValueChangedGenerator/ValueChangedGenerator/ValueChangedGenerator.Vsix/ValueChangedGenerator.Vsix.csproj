@@ -33,7 +33,6 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
 
   <ItemGroup>
-    <ProjectReference Include="..\ValueChangedGenerator.CodeFixes\ValueChangedGenerator.CodeFixes.csproj" />
     <ProjectReference Include="..\ValueChangedGenerator\ValueChangedGenerator.csproj" />
   </ItemGroup>
 

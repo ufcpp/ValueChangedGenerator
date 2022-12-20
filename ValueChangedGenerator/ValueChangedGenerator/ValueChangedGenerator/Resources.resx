@@ -129,4 +129,8 @@
     <value>PropertyChanged can be generated</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="CodeFixTitle" xml:space="preserve">
+    <value>Generate properties</value>
+    <comment>The title of the code fix.</comment>
+  </data>
 </root>

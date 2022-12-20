@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30428.66
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueChangedGenerator", "ValueChangedGenerator\ValueChangedGenerator\ValueChangedGenerator.csproj", "{5915CA94-F5A8-49BA-98FD-09B455C26E44}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueChangedGenerator.CodeFixes", "ValueChangedGenerator\ValueChangedGenerator.CodeFixes\ValueChangedGenerator.CodeFixes.csproj", "{FAA797FC-723C-47C7-B3DA-2672733C7B4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueChangedGenerator.Package", "ValueChangedGenerator\ValueChangedGenerator.Package\ValueChangedGenerator.Package.csproj", "{81019264-DDD8-4CA5-96DE-2573A68F6666}"
 EndProject
@@ -25,10 +23,6 @@ Global
 		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5915CA94-F5A8-49BA-98FD-09B455C26E44}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FAA797FC-723C-47C7-B3DA-2672733C7B4A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81019264-DDD8-4CA5-96DE-2573A68F6666}.Release|Any CPU.ActiveCfg = Release|Any CPU

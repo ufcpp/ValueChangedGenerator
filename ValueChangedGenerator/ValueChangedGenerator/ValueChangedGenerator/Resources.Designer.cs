@@ -86,5 +86,14 @@ namespace ValueChangedGenerator {
                 return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate properties.
+        /// </summary>
+        internal static string CodeFixTitle {
+            get {
+                return ResourceManager.GetString("CodeFixTitle", resourceCulture);
+            }
+        }
     }
 }
