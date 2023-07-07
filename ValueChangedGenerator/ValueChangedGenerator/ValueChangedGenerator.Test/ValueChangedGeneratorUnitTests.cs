@@ -64,6 +64,7 @@ partial class Point
 
     private static readonly PropertyChangedEventArgs NameProperty = new PropertyChangedEventArgs(nameof(Name));
     public int Z => _value.Z;
+
     private static readonly PropertyChangedEventArgs ZProperty = new PropertyChangedEventArgs(nameof(Z));
 }";
             var text = @"
@@ -153,6 +154,7 @@ partial class C1
 
             private static readonly PropertyChangedEventArgs NameProperty = new PropertyChangedEventArgs(nameof(Name));
             public int Z => _value.Z;
+
             private static readonly PropertyChangedEventArgs ZProperty = new PropertyChangedEventArgs(nameof(Z));
         }
     }
@@ -279,6 +281,7 @@ namespace N1.N2.N3
 
                 private static readonly PropertyChangedEventArgs NameProperty = new PropertyChangedEventArgs(nameof(Name));
                 public int Z => _value.Z;
+
                 private static readonly PropertyChangedEventArgs ZProperty = new PropertyChangedEventArgs(nameof(Z));
             }
         }

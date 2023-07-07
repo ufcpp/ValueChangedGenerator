@@ -102,8 +102,8 @@ namespace ValueChangedGenerator
         private IEnumerable<MemberDeclarationSyntax> GetGeneratedMember(SimpleProperty p)
         {
             var dependentChanged = string.Join("", p.Dependents.Select(d => $" OnPropertyChanged({d.Name}Property);"));
-            var source = string.Format(@"        public {1} {0} {{ get {{ return _value.{0}; }} set {{ SetProperty(ref _value.{0}, value, {0}Property); {2} }} }}
-        private static readonly PropertyChangedEventArgs {0}Property = new PropertyChangedEventArgs(" + NameOf(p) + ");",
+            var source = string.Format($@"        public {{1}} {{0}} {{{{ get {{{{ return _value.{{0}}; }}}} set {{{{ SetProperty(ref _value.{{0}}, value, {{0}}Property); {{2}} }}}} }}}}
+        private static readonly PropertyChangedEventArgs {{0}}Property = new PropertyChangedEventArgs(" + NameOf(p) + ");",
                 p.Name, p.Type.WithoutTrivia().GetText().ToString(), dependentChanged);
 
             var generatedNodes = CSharpSyntaxTree.ParseText(source)
