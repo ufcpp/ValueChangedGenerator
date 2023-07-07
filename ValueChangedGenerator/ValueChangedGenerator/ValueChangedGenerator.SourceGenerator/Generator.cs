@@ -47,7 +47,7 @@ namespace ValueChangedGenerator
         {
             const string SystemComponentModel = "System.ComponentModel";
 
-            if (usings.Any(x => x.Name.WithoutTrivia().GetText().ToString() == SystemComponentModel))
+            if (usings.Any(x => x.Name?.WithoutTrivia().GetText().ToString() == SystemComponentModel))
                 return usings.ToArray();
 
             return usings.Concat(new[] { UsingDirective(IdentifierName("System.ComponentModel")) }).ToArray();
